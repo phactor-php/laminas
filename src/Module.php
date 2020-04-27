@@ -80,6 +80,7 @@ class Module
                         'drivers' => [
                             'Phactor\Message' => 'phactor',
                             'Phactor\Actor' => 'phactor',
+                            'Phactor\Doctrine\Entity' => 'phactor',
                         ]
                     ]
                 ],
