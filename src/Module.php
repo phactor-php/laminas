@@ -52,7 +52,7 @@ class Module
 
         if (class_exists(\DoctrineORMModule\Module::class) && class_exists(OrmEventStore::class)) {
             $config['phactor']['eventstore_service'] = OrmEventStore::class;
-            $config['phactor']['readmodel_repository_service'] = OrmRepository::class;
+            $config['phactor']['readmodel_repository_service'] = OrmRepositoryManager::class;
             $config['service_manager']['factories'][OrmEventStore::class] = OrmEventStoreFactory::class;
             $config['service_manager']['factories'][OrmRepositoryManager::class] = OrmRepositoryManagerFactory::class;
             $config['doctrine'] = [
