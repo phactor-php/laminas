@@ -33,17 +33,21 @@ class BusFactory implements FactoryInterface
         $delayedMessageRepository = $readmodelRepositoryContainer->get(DeferredMessage::class);
 
         $all = new All();
-        $bus = new Capture(
-            new Authorise(
-                new Delay(
-                    new Queue($all),
-                    $delayedMessageRepository,
-                    $eventStore
-                ),
+        $innerBus = new Delay(
+            new Queue($all),
+            $delayedMessageRepository,
+            $eventStore
+        );
+
+        if (empty($config['message_rbac'])) {
+            $innerBus = new Authorise(
+                $innerBus,
                 $config['message_rbac'],
                 $container->get(User::class)
-            )
-        );
+            );
+        }
+
+        $bus = new Capture($innerBus);
 
         if (isset($config['actors'])) {
             $generator = $container->get($config['generator_service']);
