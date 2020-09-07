@@ -39,7 +39,7 @@ class BusFactory implements FactoryInterface
             $eventStore
         );
 
-        if (empty($config['message_rbac'])) {
+        if (!empty($config['message_rbac'])) {
             $innerBus = new Authorise(
                 $innerBus,
                 $config['message_rbac'],
