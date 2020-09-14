@@ -12,7 +12,8 @@ class MessageBusFactory implements FactoryInterface
     public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
     {
         $messageBus = $container->get('MessageBus');
-        $identityGenerator = $container->get(Generator::class);
+        $config = $container->get('Config')['phactor'];
+        $identityGenerator = $container->get($config['generator_service']);
 
         return new MessageBus(new MessageFirer($identityGenerator, $messageBus));
     }
