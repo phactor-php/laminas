@@ -24,6 +24,9 @@ use Phactor\Message\MessageSubscriptionProvider;
 
 class BusFactory implements FactoryInterface
 {
+    public const MESSAGE_BUS = 'MessageBus';
+    public const DELAY_BUS = 'DelayBus';
+
     public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
     {
         $config = $container->get('Config')['phactor'];
@@ -33,21 +36,23 @@ class BusFactory implements FactoryInterface
         $delayedMessageRepository = $readmodelRepositoryContainer->get(DeferredMessage::class);
 
         $all = new All();
-        $innerBus = new Delay(
+        $bus = new Delay(
             new Queue($all),
             $delayedMessageRepository,
             $eventStore
         );
 
-        if (!empty($config['message_rbac'])) {
-            $innerBus = new Authorise(
-                $innerBus,
-                $config['message_rbac'],
-                $container->get(User::class)
-            );
-        }
+        if ($requestedName === self::MESSAGE_BUS) {
+            if (!empty($config['message_rbac'])) {
+                $bus = new Authorise(
+                    $bus,
+                    $config['message_rbac'],
+                    $container->get(User::class)
+                );
+            }
 
-        $bus = new Capture($innerBus);
+            $bus = new Capture($bus);
+        }
 
         if (isset($config['actors'])) {
             $generator = $container->get($config['generator_service']);

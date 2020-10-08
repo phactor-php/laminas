@@ -28,7 +28,8 @@ class Module
                     InMemoryEventStore::class => InvokableFactory::class,
                     YouTubeStyleIdentityGenerator::class => InvokableFactory::class,
                     InMemoryRepositoryManager::class => InMemoryRepositoryManagerFactory::class,
-                    'MessageBus' => BusFactory::class,
+                    BusFactory::MESSAGE_BUS => BusFactory::class,
+                    BusFactory::DELAY_BUS => BusFactory::class,
                     MessageHandlerManager::class => MessageHandlerManagerFactory::class,
                 ]
             ],
